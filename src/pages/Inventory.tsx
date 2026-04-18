@@ -17,22 +17,43 @@ const Inventory = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
 
-    const fetchProducts = () => {
-        setLoading(true);
-        fetch(`${API_BASE_URL}/products`)
-            .then((res) => res.json())
-            .then((data) => {
-                setProducts(data);
-                setLoading(false);
-            })
-            .catch((err) => {
-                console.error("Error fetching products:", err);
-                setLoading(false);
-            });
+    const fetchProducts = async () => {
+        try {
+            setLoading(true);
+
+            const res = await fetch(`${API_BASE_URL}/products`);
+
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+
+            const data = await res.json();
+            setProducts(data);
+        } catch (err) {
+            console.error("Error fetching products:", err);
+            setProducts([]);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
-        fetchProducts();
+        const getProducts = async () => {
+            const res = await fetch(`${API_BASE_URL}/products`);
+
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+
+            return res.json();
+        };
+
+        setLoading(true);
+
+        getProducts()
+            .then(setProducts)
+            .catch(console.error)
+            .finally(() => setLoading(false));
     }, []);
 
     return (

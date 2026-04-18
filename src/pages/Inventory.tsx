@@ -15,7 +15,7 @@ interface Product {
 
 const Inventory = () => {
     const [products, setProducts] = useState<Product[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const fetchProducts = async () => {
         try {
@@ -28,7 +28,9 @@ const Inventory = () => {
             }
 
             const data = await res.json();
-            setProducts(data);
+
+            // ✅ safety check (prevents .map crash)
+            setProducts(Array.isArray(data) ? data : []);
         } catch (err) {
             console.error("Error fetching products:", err);
             setProducts([]);
@@ -38,22 +40,7 @@ const Inventory = () => {
     };
 
     useEffect(() => {
-        const getProducts = async () => {
-            const res = await fetch(`${API_BASE_URL}/products`);
-
-            if (!res.ok) {
-                throw new Error(`HTTP error! status: ${res.status}`);
-            }
-
-            return res.json();
-        };
-
-        setLoading(true);
-
-        getProducts()
-            .then(setProducts)
-            .catch(console.error)
-            .finally(() => setLoading(false));
+        fetchProducts();
     }, []);
 
     return (
@@ -78,11 +65,17 @@ const Inventory = () => {
                             >
                                 <div>
                                     <p className="font-medium">{product.name}</p>
-                                    {product.category && (
-                                        <p className="text-sm text-gray-500">{product.category.name}</p>
+
+                                    {/* safe category rendering */}
+                                    {product.category?.name && (
+                                        <p className="text-sm text-gray-500">
+                                            {product.category.name}
+                                        </p>
                                     )}
                                 </div>
+
                                 <p>${product.price}</p>
+
                                 <p className={product.stock === 0 ? "text-red-500" : ""}>
                                     {product.stock === 0 ? "Out of Stock" : `${product.stock} units`}
                                 </p>

@@ -67,11 +67,11 @@ const Inventory = () => {
                                     <p className="font-medium">{product.name}</p>
 
                                     {/* safe category rendering */}
-                                    {product.category?.name && (
+                                    {/* {product.category?.name && (
                                         <p className="text-sm text-gray-500">
                                             {product.category.name}
                                         </p>
-                                    )}
+                                    )} */}
                                 </div>
 
                                 <p>${product.price}</p>

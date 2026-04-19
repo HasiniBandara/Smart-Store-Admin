@@ -16,6 +16,7 @@ interface Product {
 const Inventory = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(false);
+    const [editedProducts, setEditedProducts] = useState<Record<number, Product>>({});
 
     const fetchProducts = async () => {
         try {
@@ -43,6 +44,59 @@ const Inventory = () => {
         fetchProducts();
     }, []);
 
+    const handleChange = (id: number, field: keyof Product, value: any) => {
+        setEditedProducts((prev) => ({
+            ...prev,
+            [id]: {
+                ...prev[id],
+                [field]: value,
+            },
+        }));
+    };
+
+    const handleUpdate = async (id: number) => {
+        const updated = editedProducts[id];
+        if (!updated) return;
+
+        try {
+            await fetch(`${API_BASE_URL}/products/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updated),
+            });
+
+            fetchProducts();
+
+            setEditedProducts((prev) => {
+                const copy = { ...prev };
+                delete copy[id];
+                return copy;
+            });
+        } catch (err) {
+            console.error("Update failed", err);
+        }
+    };
+
+    const handleReset = (id: number) => {
+        setEditedProducts((prev) => {
+            const copy = { ...prev };
+            delete copy[id];
+            return copy;
+        });
+    };
+
+    const handleDelete = async (id: number) => {
+        try {
+            await fetch(`${API_BASE_URL}/products/${id}`, {
+                method: "DELETE",
+            });
+
+            fetchProducts();
+        } catch (err) {
+            console.error("Delete failed", err);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-100 w-full">
             <Navbar />
@@ -58,29 +112,69 @@ const Inventory = () => {
                     ) : products.length === 0 ? (
                         <p>No products found.</p>
                     ) : (
-                        products.map((product) => (
-                            <div
-                                key={product.id}
-                                className="flex justify-between border-b py-3"
-                            >
-                                <div>
-                                    <p className="font-medium">{product.name}</p>
+                        products.map((product) => {
+                            const edited = editedProducts[product.id] || product;
 
-                                    {/* safe category rendering */}
-                                    {product.category?.name && (
-                                        <p className="text-sm text-gray-500">
-                                            {product.category.name}
-                                        </p>
-                                    )}
+                            return (
+                                <div
+                                    key={product.id}
+                                    className="flex items-center justify-between border-b py-3 gap-4"
+                                >
+                                    {/* Name */}
+                                    <input
+                                        className="border p-1 rounded w-1/4"
+                                        value={edited.name}
+                                        onChange={(e) =>
+                                            handleChange(product.id, "name", e.target.value)
+                                        }
+                                    />
+
+                                    {/* Price */}
+                                    <input
+                                        type="number"
+                                        className="border p-1 rounded w-1/4"
+                                        value={edited.price}
+                                        onChange={(e) =>
+                                            handleChange(product.id, "price", Number(e.target.value))
+                                        }
+                                    />
+
+                                    {/* Stock */}
+                                    <input
+                                        type="number"
+                                        className="border p-1 rounded w-1/4"
+                                        value={edited.stock}
+                                        onChange={(e) =>
+                                            handleChange(product.id, "stock", Number(e.target.value))
+                                        }
+                                    />
+
+                                    {/* Buttons */}
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => handleUpdate(product.id)}
+                                            className="bg-green-500 text-white px-3 py-1 rounded"
+                                        >
+                                            Update
+                                        </button>
+
+                                        <button
+                                            onClick={() => handleReset(product.id)}
+                                            className="bg-gray-400 text-white px-3 py-1 rounded"
+                                        >
+                                            Reset
+                                        </button>
+
+                                        <button
+                                            onClick={() => handleDelete(product.id)}
+                                            className="bg-red-500 text-white px-3 py-1 rounded"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
                                 </div>
-
-                                <p>${product.price}</p>
-
-                                <p className={product.stock === 0 ? "text-red-500" : ""}>
-                                    {product.stock === 0 ? "Out of Stock" : `${product.stock} units`}
-                                </p>
-                            </div>
-                        ))
+                            );
+                        })
                     )}
                 </div>
 

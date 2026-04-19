@@ -17,6 +17,7 @@ const Inventory = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(false);
     const [editedProducts, setEditedProducts] = useState<Record<number, Product>>({});
+    const [message, setMessage] = useState({ text: "", type: "" });
 
     const fetchProducts = async () => {
         try {
@@ -58,13 +59,21 @@ const Inventory = () => {
         const updated = editedProducts[id];
         if (!updated) return;
 
+        const token = localStorage.getItem("token");
+
         try {
-            await fetch(`${API_BASE_URL}/products/${id}`, {
+            const res = await fetch(`${API_BASE_URL}/products/${id}`, {
                 method: "PATCH",
-                headers: { "Content-Type": "application/json" },
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify(updated),
             });
 
+            if (!res.ok) throw new Error("Update failed");
+
+            setMessage({ text: "Product updated successfully!", type: "success" });
             fetchProducts();
 
             setEditedProducts((prev) => {
@@ -74,6 +83,7 @@ const Inventory = () => {
             });
         } catch (err) {
             console.error("Update failed", err);
+            setMessage({ text: "Failed to update product.", type: "error" });
         }
     };
 
@@ -86,14 +96,26 @@ const Inventory = () => {
     };
 
     const handleDelete = async (id: number) => {
+        if (!window.confirm("Are you sure you want to delete this product?")) return;
+        
         const token = localStorage.getItem("token");
 
-        await fetch(`${API_BASE_URL}/products/${id}`, {
-            method: "DELETE",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        try {
+            const res = await fetch(`${API_BASE_URL}/products/${id}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!res.ok) throw new Error("Delete failed");
+
+            setMessage({ text: "Product deleted successfully!", type: "success" });
+            fetchProducts();
+        } catch (err) {
+            console.error("Delete failed", err);
+            setMessage({ text: "Failed to delete product.", type: "error" });
+        }
     };
 
     return (
@@ -105,6 +127,12 @@ const Inventory = () => {
                 {/* Product List */}
                 <div className="col-span-2 bg-white p-6 rounded-xl shadow">
                     <h2 className="flex items-center justify-center text-2xl text-primary font-bold mb-4">Inventory</h2>
+
+                    {message.text && (
+                        <div className={`p-3 rounded-lg text-sm mb-4 text-center ${message.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                            {message.text}
+                        </div>
+                    )}
 
                     {loading ? (
                         <p>Loading products...</p>

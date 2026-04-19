@@ -105,7 +105,7 @@ const Inventory = () => {
 
                 {/* Product List */}
                 <div className="col-span-2 bg-white p-6 rounded-xl shadow">
-                    <h2 className="font-semibold mb-4">Inventory</h2>
+                    <h2 className="flex items-center justify-center text-2xl text-primary font-bold mb-4">Inventory</h2>
 
                     {loading ? (
                         <p>Loading products...</p>
@@ -150,7 +150,7 @@ const Inventory = () => {
                                     />
 
                                     {/* Buttons */}
-                                    <div className="flex gap-2">
+                                    <div className="flex text-sm gap-2">
                                         <button
                                             onClick={() => handleUpdate(product.id)}
                                             className="bg-green-500 text-white px-3 py-1 rounded"
@@ -181,7 +181,7 @@ const Inventory = () => {
                 {/* Form */}
                 <ProductForm onProductAdded={fetchProducts} />
             </div>
-        </div>
+        </div >
     );
 };
 

@@ -43,23 +43,43 @@ const Orders = () => {
             <Navbar />
 
             <div className="p-6 bg-white m-6 rounded-xl shadow">
-                <h2 className="font-semibold mb-4">All Orders</h2>
+                <h2 className="flex items-center justify-center text-2xl text-primary font-bold mb-4">Order Details</h2>
 
-                {orders.map((order) => (
-                    <div key={order.id} className="border-b py-4">
-                        <p className="font-semibold">
-                            Order ID: {order.id}
-                        </p>
-
-                        <div className="mt-2">
-                            {order.products.map((p, i) => (
-                                <p key={i} className="text-sm ml-2">
-                                    {p.name} - Qty: {p.quantity}
-                                </p>
-                            ))}
-                        </div>
+                <div className="bg-white rounded-xl shadow p-6">
+                    <div className="grid grid-cols-4 font-semibold bg-slate-200 border-b-4 py-2">
+                        <p>Order ID</p>
+                        <p>Products</p>
+                        <p>Quantity</p>
+                        <p>Date</p>
                     </div>
-                ))}
+
+                    {orders.map((order) => (
+                        <div
+                            key={order.id}
+                            className="grid grid-cols-4 py-3 border-b-4 text-sm items-start"
+                        >
+                            {/* Order ID */}
+                            <p className="ml-7">{order.id}</p>
+
+                            {/* Products */}
+                            <div className="flex flex-col gap-1">
+                                {order.products.map((p, i) => (
+                                    <p key={i}>{p.name}</p>
+                                ))}
+                            </div>
+
+                            {/* Quantities */}
+                            <div className="flex flex-col gap-1">
+                                {order.products.map((p, i) => (
+                                    <p key={i}>{p.quantity}</p>
+                                ))}
+                            </div>
+
+                            {/* Date */}
+                            <p>{new Date(order.createdAt).toLocaleString()}</p>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );

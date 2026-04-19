@@ -68,7 +68,7 @@ const ProductForm = ({ onProductAdded }: ProductFormProps) => {
 
     return (
         <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow w-full max-w-md h-fit">
-            <h2 className="font-semibold mb-4">Add Product</h2>
+            <h2 className="font-semibold mb-4 flex items-center justify-center text-lg text-primary">Add Product</h2>
 
             {message && (
                 <p className={`mb-4 text-sm ${message.includes("success") ? "text-green-500" : "text-red-500"}`}>

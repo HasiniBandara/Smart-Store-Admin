@@ -86,15 +86,14 @@ const Inventory = () => {
     };
 
     const handleDelete = async (id: number) => {
-        try {
-            await fetch(`${API_BASE_URL}/products/${id}`, {
-                method: "DELETE",
-            });
+        const token = localStorage.getItem("token");
 
-            fetchProducts();
-        } catch (err) {
-            console.error("Delete failed", err);
-        }
+        await fetch(`${API_BASE_URL}/products/${id}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
     };
 
     return (

@@ -15,7 +15,7 @@ const Navbar = () => {
 
             <div className="flex items-center gap-8">
                 <div className="flex gap-6">
-                    <Link to="/" className="text-primary font-semibold hover:text-[#8e1034] transition-colors">
+                    <Link to="/inventory" className="text-primary font-semibold hover:text-[#8e1034] transition-colors">
                         Inventory
                     </Link>
                     <Link to="/orders" className="text-primary font-semibold hover:text-[#8e1034] transition-colors">

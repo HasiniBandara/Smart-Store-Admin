@@ -157,10 +157,10 @@ const Inventory = () => {
                             return (
                                 <div
                                     key={product.id}
-                                    className="flex items-center justify-between border-b py-3 gap-4"
+                                    className="flex items-center justify-between border-b py-5 gap-5"
                                 >
                                     {/* Image Preview */}
-                                    <div className="w-12 h-12 flex-shrink-0 bg-gray-200 rounded overflow-hidden">
+                                    <div className="w-16 h-16 flex-shrink-0 bg-gray-200 rounded overflow-hidden">
                                         {edited.image ? (                                            // <img 
                                             //     src={`${API_BASE_URL}${product.image}`} 
                                             //     alt={product.name} 
@@ -182,44 +182,50 @@ const Inventory = () => {
 
                                         )}
                                     </div>
-                                    {/* Image URL */}
-                                    <input
-                                        className="border p-1 rounded w-1/4"
-                                        placeholder="Image URL"
-                                        value={edited.image || ""}
-                                        onChange={(e) =>
-                                            handleChange(product.id, "image", e.target.value)
-                                        }
-                                    />
 
-                                    {/* Name */}
-                                    <input
-                                        className="border p-1 rounded w-1/4"
-                                        value={edited.name}
-                                        onChange={(e) =>
-                                            handleChange(product.id, "name", e.target.value)
-                                        }
-                                    />
+                                    <div className="flex flex-col gap-2 flex-1">
 
-                                    {/* Price */}
-                                    <input
-                                        type="number"
-                                        className="border p-1 rounded w-1/4"
-                                        value={edited.price}
-                                        onChange={(e) =>
-                                            handleChange(product.id, "price", Number(e.target.value))
-                                        }
-                                    />
+                                        {/* Image URL */}
+                                        <input
+                                            className="border-2 p-1 rounded w-full text-sm bg-slate-50"
+                                            placeholder="Image URL"
+                                            value={edited.image || ""}
+                                            onChange={(e) =>
+                                                handleChange(product.id, "image", e.target.value)
+                                            }
+                                        />
 
-                                    {/* Stock */}
-                                    <input
-                                        type="number"
-                                        className="border p-1 rounded w-1/4"
-                                        value={edited.stock}
-                                        onChange={(e) =>
-                                            handleChange(product.id, "stock", Number(e.target.value))
-                                        }
-                                    />
+                                        <div className="flex items-center gap-2">
+                                            {/* Name */}
+                                            <input
+                                                className="border-2 p-1 rounded w-auto font-semibold"
+                                                value={edited.name}
+                                                onChange={(e) =>
+                                                    handleChange(product.id, "name", e.target.value)
+                                                }
+                                            />
+
+                                            {/* Price */}
+                                            <input
+                                                type="number"
+                                                className="border-2 p-1 rounded w-2/3"
+                                                value={edited.price}
+                                                onChange={(e) =>
+                                                    handleChange(product.id, "price", Number(e.target.value))
+                                                }
+                                            />
+
+                                            {/* Stock */}
+                                            <input
+                                                type="number"
+                                                className="border-2 p-1 rounded w-1/3"
+                                                value={edited.stock}
+                                                onChange={(e) =>
+                                                    handleChange(product.id, "stock", Number(e.target.value))
+                                                }
+                                            />
+                                        </div>
+                                    </div>
 
                                     {/* Buttons */}
                                     <div className="flex text-sm gap-2">

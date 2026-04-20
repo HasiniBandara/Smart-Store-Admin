@@ -35,7 +35,7 @@ const Login = () => {
             }
 
             if (isLogin) {
-                localStorage.setItem("token", data.access_token);
+                localStorage.setItem("token", data.token);
                 localStorage.setItem("user", JSON.stringify(data.user));
                 navigate("/");
             } else {
@@ -54,7 +54,7 @@ const Login = () => {
         <div className="min-h-screen bg-light flex items-center justify-center p-6 font-main">
             <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 transform transition-all hover:scale-[1.01]">
                 <div className="text-center mb-10">
-                    <h1 className="text-5xl text-primary mb-2">c & c</h1>
+                    <h1 className="text-5xl text-primary mb-2 font-logo">c & c</h1>
                     <p className="text-gray-500 text-sm">Admin Dashboard</p>
                 </div>
 

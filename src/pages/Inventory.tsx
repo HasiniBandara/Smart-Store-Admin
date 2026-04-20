@@ -11,6 +11,7 @@ interface Product {
     category?: {
         name: string;
     };
+    image?: string;
 }
 
 const Inventory = () => {
@@ -147,6 +148,20 @@ const Inventory = () => {
                                     key={product.id}
                                     className="flex items-center justify-between border-b py-3 gap-4"
                                 >
+                                    {/* Image Preview */}
+                                    <div className="w-12 h-12 flex-shrink-0 bg-gray-200 rounded overflow-hidden">
+                                        {product.image ? (
+                                            <img 
+                                                src={`${API_BASE_URL}${product.image}`} 
+                                                alt={product.name} 
+                                                className="w-full h-full object-cover"
+                                                onError={(e) => (e.currentTarget.style.display = 'none')}
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-[10px] text-gray-400">No img</div>
+                                        )}
+                                    </div>
+
                                     {/* Name */}
                                     <input
                                         className="border p-1 rounded w-1/4"

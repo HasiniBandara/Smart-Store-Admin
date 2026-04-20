@@ -11,7 +11,7 @@ const Navbar = () => {
 
     return (
         <div className="w-full bg-white shadow px-20 py-6 flex justify-between items-center">
-            <h1 className="text-xl font-bold text-primary font-logo text-3xl">c & C Admin</h1>
+            <h1 className="text-2xl font-logo font-bold text-primary tracking-wide">c & c Admin</h1>
 
             <div className="flex items-center gap-8">
                 <div className="flex gap-6">

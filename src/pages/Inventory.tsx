@@ -47,17 +47,22 @@ const Inventory = () => {
     }, []);
 
     const handleChange = (id: number, field: keyof Product, value: any) => {
+        const original = products.find(p => p.id === id)!;
         setEditedProducts((prev) => ({
             ...prev,
             [id]: {
-                ...prev[id],
-                [field]: value,
+                ...original,       // ← start with full product
+                ...prev[id],       // ← keep any previously edited fields
+                [field]: value,    // ← apply new change
             },
         }));
     };
 
     const handleUpdate = async (id: number) => {
         const updated = editedProducts[id];
+
+        console.log("Sending update:", updated);
+
         if (!updated) return;
 
         const token = localStorage.getItem("token");
@@ -65,12 +70,18 @@ const Inventory = () => {
         try {
             const res = await fetch(`${API_BASE_URL}/products/${id}`, {
                 method: "PATCH",
-                headers: { 
+                headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify(updated),
             });
+
+
+            console.log("Response status:", res.status); // ← add this
+            const responseData = await res.json();
+            console.log("Response data:", responseData);
+
 
             if (!res.ok) throw new Error("Update failed");
 
@@ -98,7 +109,7 @@ const Inventory = () => {
 
     const handleDelete = async (id: number) => {
         if (!window.confirm("Are you sure you want to delete this product?")) return;
-        
+
         const token = localStorage.getItem("token");
 
         try {
@@ -150,17 +161,36 @@ const Inventory = () => {
                                 >
                                     {/* Image Preview */}
                                     <div className="w-12 h-12 flex-shrink-0 bg-gray-200 rounded overflow-hidden">
-                                        {product.image ? (
-                                            <img 
-                                                src={`${API_BASE_URL}${product.image}`} 
-                                                alt={product.name} 
+                                        {edited.image ? (                                            // <img 
+                                            //     src={`${API_BASE_URL}${product.image}`} 
+                                            //     alt={product.name} 
+                                            //     className="w-full h-full object-cover"
+                                            //     onError={(e) => (e.currentTarget.style.display = 'none')}
+                                            // />
+
+                                            <img
+                                                src={edited.image}
+                                                alt={product.name}
                                                 className="w-full h-full object-cover"
                                                 onError={(e) => (e.currentTarget.style.display = 'none')}
+
+
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-[10px] text-gray-400">No img</div>
+
+
                                         )}
                                     </div>
+                                    {/* Image URL */}
+                                    <input
+                                        className="border p-1 rounded w-1/4"
+                                        placeholder="Image URL"
+                                        value={edited.image || ""}
+                                        onChange={(e) =>
+                                            handleChange(product.id, "image", e.target.value)
+                                        }
+                                    />
 
                                     {/* Name */}
                                     <input
